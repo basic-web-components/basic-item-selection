@@ -8,11 +8,18 @@ Aspect which manages selection semantics for items in a list.
 
 <script>
 /**
- * Fires when a new item has been selected.
+ * Fires when the selectedItem property changes.
  *
  * @event selected-item-changed
  * @param detail.selectedItem The new selected item.
  * @param detail.previousItem The previously selected item.
+ */
+
+/**
+ * Fires when the selectedIndex property changes.
+ *
+ * @event selected-item-changed
+ * @param detail.selectedIndex The new selected index.
  */
 
 window.Basic = window.Basic || {};
@@ -91,10 +98,10 @@ window.Basic.ItemSelection = {
           bubbles: true,
           detail: {
             selectedItem: item,
-            previousItem: previousItem
+            previousItem: previousItem,
+            value: item // for Polymer binding
           }
         });
-
         outermost.dispatchEvent(event);
       }
     },
@@ -131,6 +138,18 @@ window.Basic.ItemSelection = {
         item = items[index];
       }
       this.collective.selectedItem = item;
+
+      var outermost = this.collective.outermostAttached;
+      if (outermost) {
+        var event = new CustomEvent('selected-index-changed', {
+          bubbles: true,
+          detail: {
+            selectedIndex: index,
+            value: index // for Polymer binding
+          }
+        });
+        outermost.dispatchEvent(event);
+      }
     },
 
     /**
